@@ -65,17 +65,4 @@ public class UserServiceImpl implements IUserService {
             throw new RuntimeException("Error updating user");
         }
     }
-
-    @Override
-    public HashMap<String, String> deleteUser(Long userId) {
-        try {
-            HashMap<String, String> response = new HashMap<>();
-            response.put("message", "User deleted succesfully!");
-            userRepository.deleteById(userId);
-            return response;
-        } catch (Exception e) {
-            LOGGER.error("Error while deleting user: {}", e.getMessage());
-            throw new RuntimeException("Error deleting user");
-        }
-    }
 }

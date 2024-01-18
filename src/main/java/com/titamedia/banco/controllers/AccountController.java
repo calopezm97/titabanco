@@ -2,12 +2,12 @@ package com.titamedia.banco.controllers;
 
 import com.titamedia.banco.persistence.entities.AccountEntity;
 import com.titamedia.banco.services.IAccountService;
+import com.titamedia.banco.services.businesslogic.AccountServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,11 +18,14 @@ public class AccountController {
     @Autowired
     IAccountService AccountService;
 
-
     @PostMapping("/create")
     public ResponseEntity<AccountEntity> createAccount(@RequestBody AccountEntity Account) {
         try {
-            AccountEntity createdAccount = AccountService.createAccount(Account);
+            AccountEntity account = new AccountEntity();
+            account.setAmount(Account.getAmount());
+            account.setBank(Account.getBank());
+            account.setUser(Account.getUser());
+            AccountEntity createdAccount = AccountService.createAccount(account);
             return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -49,26 +52,20 @@ public class AccountController {
         }
     }
 
-    @PutMapping("/update/{AccountId}")
-    public ResponseEntity<AccountEntity> updateAccount(@PathVariable Long AccountId, @RequestBody AccountEntity newAccount) {
+    @GetMapping("get/user/{UserId}")
+    public ResponseEntity<AccountEntity> getUserById(@PathVariable Long UserId) {
         try {
-            AccountEntity updatedAccount = AccountService.updateAccount(AccountId, newAccount);
-            if (updatedAccount != null) {
-                return new ResponseEntity<>(updatedAccount, HttpStatus.OK);
+            List<AccountEntity> accounts = AccountService.findByUser(UserId);
+
+            if (!accounts.isEmpty()) {
+                return ResponseEntity.ok((AccountEntity) accounts);
+            } else {
+                return ResponseEntity.notFound().build();
             }
-            return ResponseEntity.notFound().build();
+
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @DeleteMapping("/delete/{AccountId}")
-    public ResponseEntity<HashMap<String, String>> deleteAccount(@PathVariable Long AccountId) {
-        try {
-            HashMap<String, String> response = AccountService.deleteAccount(AccountId);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 }

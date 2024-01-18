@@ -18,7 +18,6 @@ public class TransactionController {
     @Autowired
     ITransactionService TransactionService;
 
-
     @PostMapping("/create")
     public ResponseEntity<TransactionEntity> createTransaction(@RequestBody TransactionEntity Transaction) {
         try {
@@ -44,29 +43,6 @@ public class TransactionController {
         try {
             Optional<TransactionEntity> Transaction = TransactionService.getTransactionById(TransactionId);
             return Transaction.map(value -> ResponseEntity.ok().body(value)).orElseGet(() -> ResponseEntity.notFound().build());
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PutMapping("/update/{TransactionId}")
-    public ResponseEntity<TransactionEntity> updateTransaction(@PathVariable Long TransactionId, @RequestBody TransactionEntity newTransaction) {
-        try {
-            TransactionEntity updatedTransaction = TransactionService.updateTransaction(TransactionId, newTransaction);
-            if (updatedTransaction != null) {
-                return new ResponseEntity<>(updatedTransaction, HttpStatus.OK);
-            }
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @DeleteMapping("/delete/{TransactionId}")
-    public ResponseEntity<HashMap<String, String>> deleteTransaction(@PathVariable Long TransactionId) {
-        try {
-            HashMap<String, String> response = TransactionService.deleteTransaction(TransactionId);
-            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -12,5 +12,4 @@ public interface IUserService {
     public List<UserEntity> getAllUsers();
     public Optional<UserEntity> getUserById(Long userId);
     public UserEntity updateUser(Long userId, UserEntity newUser);
-    public HashMap<String, String> deleteUser(Long userId);
 }

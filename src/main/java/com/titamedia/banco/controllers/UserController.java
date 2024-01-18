@@ -18,7 +18,6 @@ public class UserController {
     @Autowired
     IUserService userService;
 
-
     @PostMapping("/create")
     public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity user) {
         try {
@@ -57,16 +56,6 @@ public class UserController {
                 return new ResponseEntity<>(updatedUser, HttpStatus.OK);
             }
             return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<HashMap<String, String>> deleteUser(@PathVariable Long userId) {
-        try {
-            HashMap<String, String> response = userService.deleteUser(userId);
-            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

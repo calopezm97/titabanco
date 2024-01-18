@@ -49,32 +49,5 @@ public class TransactionServiceImpl implements ITransactionService {
         }
     }
 
-    @Override
-    public TransactionEntity updateTransaction(Long TransactionId, TransactionEntity newTransaction) {
-        try {
-            TransactionEntity existingTransaction = TransactionRepository.findById(TransactionId).orElse(null);
-            if (existingTransaction != null) {
-                //existingTransaction.setName(newTransaction.getName());
 
-                return TransactionRepository.save(existingTransaction);
-            }
-            throw new RuntimeException("Transaction not found");
-        } catch (Exception e) {
-            LOGGER.error("Error while updating Transaction: {}", e.getMessage());
-            throw new RuntimeException("Error updating Transaction");
-        }
-    }
-
-    @Override
-    public HashMap<String, String> deleteTransaction(Long TransactionId) {
-        try {
-            HashMap<String, String> response = new HashMap<>();
-            response.put("message", "Transaction deleted succesfully!");
-            TransactionRepository.deleteById(TransactionId);
-            return response;
-        } catch (Exception e) {
-            LOGGER.error("Error while deleting Transaction: {}", e.getMessage());
-            throw new RuntimeException("Error deleting Transaction");
-        }
-    }
 }

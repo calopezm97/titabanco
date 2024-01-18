@@ -1,8 +1,15 @@
 package com.titamedia.banco.services.businesslogic;
 
 import com.titamedia.banco.persistence.entities.AccountEntity;
+import com.titamedia.banco.persistence.entities.BankEntity;
 import com.titamedia.banco.persistence.repos.AccountRepository;
 import com.titamedia.banco.services.IAccountService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +25,8 @@ public class AccountServiceImpl implements IAccountService {
 
     @Autowired
     AccountRepository AccountRepository;
+    EntityManager em;
+
 
     @Override
     public AccountEntity createAccount(AccountEntity Account) {
@@ -50,31 +59,15 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public AccountEntity updateAccount(Long AccountId, AccountEntity newAccount) {
-        try {
-            AccountEntity existingAccount = AccountRepository.findById(AccountId).orElse(null);
-            if (existingAccount != null) {
-                //existingAccount.setName(newAccount.getName());
+    public List<AccountEntity> findByUser(Long userId) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AccountEntity> cq = cb.createQuery(AccountEntity.class);
 
-                return AccountRepository.save(existingAccount);
-            }
-            throw new RuntimeException("Account not found");
-        } catch (Exception e) {
-            LOGGER.error("Error while updating Account: {}", e.getMessage());
-            throw new RuntimeException("Error updating Account");
-        }
-    }
+        Root<AccountEntity> account = cq.from(AccountEntity.class);
+        Predicate userIdPredicate = cb.equal(account.get("user_id"), userId);
+        cq.where(userIdPredicate);
 
-    @Override
-    public HashMap<String, String> deleteAccount(Long AccountId) {
-        try {
-            HashMap<String, String> response = new HashMap<>();
-            response.put("message", "Account deleted succesfully!");
-            AccountRepository.deleteById(AccountId);
-            return response;
-        } catch (Exception e) {
-            LOGGER.error("Error while deleting Account: {}", e.getMessage());
-            throw new RuntimeException("Error deleting Account");
-        }
+        TypedQuery<AccountEntity> query = em.createQuery(cq);
+        return query.getResultList();
     }
 }

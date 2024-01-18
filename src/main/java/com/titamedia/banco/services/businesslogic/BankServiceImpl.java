@@ -3,12 +3,17 @@ package com.titamedia.banco.services.businesslogic;
 import com.titamedia.banco.persistence.entities.BankEntity;
 import com.titamedia.banco.persistence.repos.BankRepository;
 import com.titamedia.banco.services.IBankService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +21,7 @@ import java.util.Optional;
 public class BankServiceImpl implements IBankService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BankServiceImpl.class);
 
+    EntityManager em;
     @Autowired
     BankRepository BankRepository;
 
@@ -62,19 +68,6 @@ public class BankServiceImpl implements IBankService {
         } catch (Exception e) {
             LOGGER.error("Error while updating Bank: {}", e.getMessage());
             throw new RuntimeException("Error updating Bank");
-        }
-    }
-
-    @Override
-    public HashMap<String, String> deleteBank(Long BankId) {
-        try {
-            HashMap<String, String> response = new HashMap<>();
-            response.put("message", "Bank deleted succesfully!");
-            BankRepository.deleteById(BankId);
-            return response;
-        } catch (Exception e) {
-            LOGGER.error("Error while deleting Bank: {}", e.getMessage());
-            throw new RuntimeException("Error deleting Bank");
         }
     }
 }

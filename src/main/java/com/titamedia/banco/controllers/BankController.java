@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +16,6 @@ public class BankController {
 
     @Autowired
     IBankService BankService;
-
 
     @PostMapping("/create")
     public ResponseEntity<BankEntity> createBank(@RequestBody BankEntity Bank) {
@@ -39,20 +37,20 @@ public class BankController {
         }
     }
 
-    @GetMapping("get/{BankId}")
-    public ResponseEntity<BankEntity> getBankById(@PathVariable Long BankId) {
+    @GetMapping("get/{bankId}")
+    public ResponseEntity<BankEntity> getBankById(@PathVariable Long bankId) {
         try {
-            Optional<BankEntity> Bank = BankService.getBankById(BankId);
+            Optional<BankEntity> Bank = BankService.getBankById(bankId);
             return Bank.map(value -> ResponseEntity.ok().body(value)).orElseGet(() -> ResponseEntity.notFound().build());
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PutMapping("/update/{BankId}")
-    public ResponseEntity<BankEntity> updateBank(@PathVariable Long BankId, @RequestBody BankEntity newBank) {
+    @PutMapping("/update/{bankId}")
+    public ResponseEntity<BankEntity> updateBank(@PathVariable Long bankId, @RequestBody BankEntity newBank) {
         try {
-            BankEntity updatedBank = BankService.updateBank(BankId, newBank);
+            BankEntity updatedBank = BankService.updateBank(bankId, newBank);
             if (updatedBank != null) {
                 return new ResponseEntity<>(updatedBank, HttpStatus.OK);
             }
@@ -62,13 +60,4 @@ public class BankController {
         }
     }
 
-    @DeleteMapping("/delete/{BankId}")
-    public ResponseEntity<HashMap<String, String>> deleteBank(@PathVariable Long BankId) {
-        try {
-            HashMap<String, String> response = BankService.deleteBank(BankId);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 }
