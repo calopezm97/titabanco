@@ -2,7 +2,8 @@ package com.titamedia.banco.controllers;
 
 import com.titamedia.banco.persistence.entities.AccountEntity;
 import com.titamedia.banco.services.IAccountService;
-import com.titamedia.banco.services.businesslogic.AccountServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,17 +16,16 @@ import java.util.Optional;
 @RequestMapping("/Account")
 public class AccountController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
     @Autowired
     IAccountService AccountService;
 
     @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AccountEntity> createAccount(@RequestBody AccountEntity Account) {
         try {
-            AccountEntity account = new AccountEntity();
-            account.setAmount(Account.getAmount());
-            account.setBank(Account.getBank());
-            account.setUser(Account.getUser());
-            AccountEntity createdAccount = AccountService.createAccount(account);
+            logger.info("Creando cuenta con usuario: {} y banco: {}", Account.getUser(), Account.getBank());
+            AccountEntity createdAccount = AccountService.createAccount(Account);
             return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
